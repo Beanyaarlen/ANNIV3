@@ -11,12 +11,13 @@ if(step===3){$('#content').innerHTML=`<div class="chapter">03 / MISI YANG INGIN 
 $('#story h2').setAttribute('tabindex','-1');$('#story h2').focus({preventScroll:true});}
 $('#start').onclick=()=>{ startMusicOnce(); transition(1); };$('#back').onclick=()=>transition(Math.max(0,step-1));
 
-// The audio asset contains only 03:05 through the end of the original song.
-// Native looping therefore always returns to that exact starting section.
+// This asset starts at 03:05 of the original song; loop repeats that section.
 const music = document.querySelector('#bgMusic');
 const musicToggle = document.querySelector('#musicToggle');
+const musicPrompt = document.querySelector('#musicPrompt');
 let musicStarted = false;
-let musicPending = false;
+let userPaused = false;
+let playRequest = 0;
 music.volume = 0.65;
 
 function updateMusicButton() {
@@ -27,34 +28,58 @@ function updateMusicButton() {
 }
 
 async function playMusic() {
-  if (musicPending) return;
-  musicPending = true;
+  const request = ++playRequest;
   try {
+    // Call synchronously inside the input handler to preserve user activation.
     await music.play();
+    if (request !== playRequest) return;
     musicStarted = true;
+    musicPrompt.hidden = true;
   } catch (error) {
-    toast('Musik belum bisa diputar. Coba tekan tombol musik lagi.');
+    if (request !== playRequest || userPaused) return;
+    if (error.name === 'NotAllowedError') {
+      musicPrompt.hidden = false;
+    } else if (error.name !== 'AbortError') {
+      toast('Musik belum bisa dimuat. Tekan tombol musik untuk mencoba lagi.');
+    }
   } finally {
-    musicPending = false;
     updateMusicButton();
   }
 }
 
 function startMusicOnce() {
-  // Respect a deliberate pause when the story is opened again.
-  if (!musicStarted) void playMusic();
+  if (!musicStarted && !userPaused) void playMusic();
 }
 
+function unlockMusic(event) {
+  // The music button has its own handler, avoiding an immediate play/pause.
+  if (event.target.closest?.('#musicToggle')) return;
+  if (event.type === 'keydown' && (event.repeat || ['Shift', 'Control', 'Alt', 'Meta', 'Escape'].includes(event.key))) return;
+  startMusicOnce();
+}
+
+document.addEventListener('click', unlockMusic);
+document.addEventListener('keydown', unlockMusic);
 musicToggle.addEventListener('click', () => {
-  if (musicPending || !music.paused) {
+  if (!music.paused) {
+    userPaused = true;
+    ++playRequest;
     music.pause();
+    musicPrompt.hidden = true;
   } else {
+    userPaused = false;
     void playMusic();
   }
 });
-music.addEventListener('play', updateMusicButton);
+music.addEventListener('playing', () => {
+  musicStarted = true;
+  musicPrompt.hidden = true;
+  updateMusicButton();
+});
 music.addEventListener('pause', updateMusicButton);
 music.addEventListener('error', () => {
   updateMusicButton();
-  toast('Lagu tidak bisa dimuat. Periksa koneksi lalu coba kembali.');
+  toast('Lagu tidak bisa dimuat. Periksa koneksi dan file musik.');
 });
+// Try audible playback immediately; browsers may require a first interaction.
+void playMusic();

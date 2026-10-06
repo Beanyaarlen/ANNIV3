@@ -40,9 +40,9 @@ Animasi mengikuti pengaturan reduced motion perangkat. Interaksi menggunakan tom
 
 ## Musik latar
 
-Lagu yang dikirim pengguna: Da-iCE — Promise.
-`assets/promise-from-3m05.m4a` hanya berisi bagian **03:05 sampai akhir lagu** (sekitar 1 menit 25 detik). Atribut `loop` pada elemen audio mengulang bagian ini terus-menerus, sehingga tidak pernah kembali ke intro lagu asli.
+Sumber musik: file HERO.mp3 yang dikirim pengguna.
+`assets/hero-from-3m05.mp3` hanya berisi bagian **03:05 sampai akhir lagu** (sekitar 1 menit 25 detik). Atribut `loop` pada elemen audio mengulang bagian ini terus-menerus, sehingga tidak pernah kembali ke intro lagu asli.
 
-Musik mulai saat tombol **Buka misi rahasia** ditekan. Tombol musik di kanan bawah dapat memutar atau menjeda. Musik berlanjut saat berpindah bab. Jika dijeda, musik tidak otomatis menyala kembali ketika cerita dibuka ulang. File asli yang diunggah tidak diubah.
+Musik mencoba langsung menyala saat halaman dibuka. Jika browser memblokir autoplay bersuara, sentuh bagian mana pun di halaman atau tekan tombol musik. Petunjuk akan muncul jika autoplay diblokir. Tombol musik di kanan bawah dapat memutar atau menjeda. Musik berlanjut saat berpindah bab. Jika dijeda, musik tidak otomatis menyala kembali ketika cerita dibuka ulang. File asli yang diunggah tidak diubah.
 
 Pastikan file audio ikut diunggah dalam folder `assets` ke GitHub.

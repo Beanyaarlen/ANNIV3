@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#122e28">
 <title>Our Secret · Three Years</title>
-<meta name="description" content="Berbeda tapi Satu cerita. Tiga tahun bersamamu.">
+<meta name="description" content="Dua dunia. Satu cerita. Tiga tahun bersamamu.">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -70,7 +70,11 @@
 </main>
 <div class="toast" id="toast" role="status">
 </div>
-<script src="./script.js" defer>
-</script>
+<audio id="bgMusic" preload="auto" autoplay loop>
+  <source src="./assets/hero-from-3m05.mp3" type="audio/mpeg">
+</audio>
+<button class="music-toggle" id="musicToggle" type="button" aria-label="Putar musik" aria-pressed="false">♫ Putar musik</button>
+<p class="music-prompt" id="musicPrompt" role="status" hidden>Sentuh halaman untuk menyalakan lagu ♫</p>
+<script src="./script.js?v=mp3-connected-4" defer></script>
 </body>
 </html>
