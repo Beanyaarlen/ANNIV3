@@ -9,4 +9,52 @@ if(step===1){$('#content').innerHTML=`<div class="chapter">01 / TIGA TAHUN, SATU
 if(step===2){$('#content').innerHTML=`<div class="chapter">02 / PESAN UNTUK PAHLAWANKU</div><h2>Identitas pahlawanku?<br><em>Selalu kamu.</em></h2><p id="envelopeHint">Ada pesan yang kusimpan di sini. Buka pelan-pelan, ya.</p><button class="envelope" id="envelope" aria-label="Buka surat anniversary"><span>♥</span></button><article class="letter" id="letter"><div class="chapter" style="color:#887039">CONFIDENTIAL / UNTUK KAMU</div><p>Sayang,</p><p>Kalau hidupku adalah sebuah cerita, kamu adalah pahlawan yang paling ingin kutemui. Bukan karena kamu harus selalu kuat atau menyelesaikan semua masalahku, tapi karena bersamamu, aku merasa punya keberanian untuk menghadapi dunia.</p><p>Kamu membawa keceriaan seperti dunia kecil Usagi, sekaligus kehangatan seorang pahlawan yang membuatku merasa tidak sendirian.</p><p>Selamat anniversary kita yang ke-3. Terima kasih sudah menjadi kamu, dan sudah berbagi tiga tahun ini denganku. Di antara banyak dunia dan segala kemungkinan, aku tetap ingin memilih kamu.</p><p>Dan saat kamu lelah, biarkan aku ikut menjagamu. Karena pahlawanku juga pantas dipeluk, didengar, dan dicintai.</p><p class="signature">Untuk pahlawanku, dengan seluruh sayangku.<br>— Benaya</p></article><button class="cta" id="next" hidden>Satu janji lagi <span>↗</span></button>`;$('#envelope').onclick=()=>{$('#envelope').hidden=true;$('#envelope').style.display='none';$('#envelopeHint').hidden=true;$('#letter').classList.add('open');$('#next').hidden=false;burst(innerWidth/2,innerHeight/2);};$('#next').onclick=()=>transition(3)}
 if(step===3){$('#content').innerHTML=`<div class="chapter">03 / MISI YANG INGIN KULANJUTKAN</div><div class="final-heart">♥</div><h2>Tiga tahun bersamamu.<br>Dan aku masih ingin<br><em>petualangan berikutnya.</em></h2><p>Aku tidak bisa menjanjikan hari yang selalu mudah.<br>Tapi aku ingin terus belajar mencintaimu, menemanimu,<br>dan menjadi tempatmu pulang.</p><div class="final-actions"><button class="cta" id="together">Lanjutkan cerita kita <span>♥</span></button><button class="secondary" id="replay">Baca dari awal ↺</button></div><p class="footer-note" id="promise" aria-live="polite">OUR LITTLE SECRET · OUR GREATEST ADVENTURE</p>`;$('#together').onclick=e=>{burst(innerWidth/2,innerHeight*.65);$('#promise').textContent='MISI DITERIMA: TERUS SALING MEMILIH. ♥';e.currentTarget.innerHTML='Kita, dan bab selanjutnya ♥';toast('Happy 3rd anniversary, pahlawanku.');};$('#replay').onclick=()=>transition(0)}
 $('#story h2').setAttribute('tabindex','-1');$('#story h2').focus({preventScroll:true});}
-$('#start').onclick=()=>transition(1);$('#back').onclick=()=>transition(Math.max(0,step-1));
+$('#start').onclick=()=>{ startMusicOnce(); transition(1); };$('#back').onclick=()=>transition(Math.max(0,step-1));
+
+// The audio asset contains only 03:05 through the end of the original song.
+// Native looping therefore always returns to that exact starting section.
+const music = document.querySelector('#bgMusic');
+const musicToggle = document.querySelector('#musicToggle');
+let musicStarted = false;
+let musicPending = false;
+music.volume = 0.65;
+
+function updateMusicButton() {
+  const playing = !music.paused && !music.ended;
+  musicToggle.textContent = playing ? 'Ⅱ Jeda musik' : '♫ Putar musik';
+  musicToggle.setAttribute('aria-label', playing ? 'Jeda musik' : 'Putar musik');
+  musicToggle.setAttribute('aria-pressed', String(playing));
+}
+
+async function playMusic() {
+  if (musicPending) return;
+  musicPending = true;
+  try {
+    await music.play();
+    musicStarted = true;
+  } catch (error) {
+    toast('Musik belum bisa diputar. Coba tekan tombol musik lagi.');
+  } finally {
+    musicPending = false;
+    updateMusicButton();
+  }
+}
+
+function startMusicOnce() {
+  // Respect a deliberate pause when the story is opened again.
+  if (!musicStarted) void playMusic();
+}
+
+musicToggle.addEventListener('click', () => {
+  if (musicPending || !music.paused) {
+    music.pause();
+  } else {
+    void playMusic();
+  }
+});
+music.addEventListener('play', updateMusicButton);
+music.addEventListener('pause', updateMusicButton);
+music.addEventListener('error', () => {
+  updateMusicButton();
+  toast('Lagu tidak bisa dimuat. Periksa koneksi lalu coba kembali.');
+});

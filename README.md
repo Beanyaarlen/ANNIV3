@@ -36,3 +36,13 @@ Tema “rahasia” adalah gaya visual. Paket statis ini tidak memiliki login ata
 - Gambar karakter: ganti PNG di `assets` dengan nama yang sama. Gunakan PNG transparan. CSS menjaga tampilannya hitam.
 
 Animasi mengikuti pengaturan reduced motion perangkat. Interaksi menggunakan tombol yang bisa dipakai dengan keyboard.
+
+
+## Musik latar
+
+Lagu yang dikirim pengguna: Da-iCE — Promise.
+`assets/promise-from-3m05.m4a` hanya berisi bagian **03:05 sampai akhir lagu** (sekitar 1 menit 25 detik). Atribut `loop` pada elemen audio mengulang bagian ini terus-menerus, sehingga tidak pernah kembali ke intro lagu asli.
+
+Musik mulai saat tombol **Buka misi rahasia** ditekan. Tombol musik di kanan bawah dapat memutar atau menjeda. Musik berlanjut saat berpindah bab. Jika dijeda, musik tidak otomatis menyala kembali ketika cerita dibuka ulang. File asli yang diunggah tidak diubah.
+
+Pastikan file audio ikut diunggah dalam folder `assets` ke GitHub.
